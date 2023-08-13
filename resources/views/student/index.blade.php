@@ -43,7 +43,7 @@
 
         #logo {
             margin: auto;
-            margin-top: 20vh;
+            margin-top: 5px;
             text-align: center;
         }
 
@@ -86,11 +86,47 @@
             vertical-align: middle;
             display: inline-block;
             text-align: center;
-            font-size: 75px;
+            font-size: 50px;
             color: #ecf0f1;
             font-family: 'Raleway', sans-serif;
             font-weight: 100;
             margin-top: -10px;
+        }
+
+        h2 {
+            vertical-align: middle;
+            display: inline-block;
+            text-align: center;
+            font-size: 30px;
+            color: #ecf0f1;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 100;
+            margin-top: -10px;
+        }
+
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+
+        .button2 {
+        background-color: white; 
+        color: black; 
+        border: 2px solid #008CBA;
+        }
+
+        .button2:hover {
+        background-color: #008CBA;
+        color: white;
         }
     </style>
 </head>
@@ -98,7 +134,9 @@
     
 <nav>
     <ul>
-        <li><a href="{{ route('register') }}"><i class="mdi mdi-compass"></i> Register</a></li>
+        <li><a href="{{ route('student_dashboard') }}"><i class="mdi mdi-compass"></i>Profile</a></li>
+        <li><a href="{{ route('student_search') }}"><i class="mdi mdi-compass"></i>Search</a></li>
+        <li><a href="{{ route('show_departments') }}"><i class="mdi mdi-compass"></i>Departments</a></li>
         @if(Auth::check() != true)
             <li><a href="{{ route('signin') }}"><i class="mdi mdi-account-box"></i> Sign In</a></li>
         @else
@@ -108,28 +146,22 @@
 </nav>
 
 <div id="logo">
-    <div class="cygle">
-
-        <div class="row">
-            <div class="dot blue"></div>
-            <div class="dot blue"></div>    
-            <div class="dot blue"></div>  
-        </div>
-
-        <div class="row">
-            <div class="dot green"></div>
-            <div class="dot green light"></div>    
-            <div class="dot green"></div>      
-        </div>
-
-        <div class="row">
-            <div class="dot blue"></div>
-            <div class="dot blue"></div>    
-            <div class="dot blue"></div>  
-        </div>
-    </div>
-
-    <h1>Faculty Review</h1>
+    <h1>Welcome {{ $student->name }}!</h1>
+</div>
+<div id="logo">
+    <h2>{{ $student->major }}</h2>
+</div>
+<div id="logo">
+    <h2>{{ Auth::user()->email }}</h2>
+</div>
+<div id="logo">
+    <h2>ID: {{ $student->id }}</h2>
+</div>
+<div id="logo">
+    <a href="{{ route('edit_profile') }}"><button class="button button2" type="button">Edit Profile</button></a>
+    <a href="{{ route('student_add_faculty') }}"><button class="button button2" type="button">Add Faculty</button></a>
+    <a href="{{ route('student_add_course') }}"><button class="button button2" type="button">Add Course</button></a>
+    <a href="{{ route('student_add_comment') }}"><button class="button button2" type="button">Add Comment</button></a>
 </div>
 </body>
 </html>

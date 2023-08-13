@@ -1,29 +1,45 @@
 <?php
 namespace App\Http\Controllers;
 use App\Student; //using the Student Model in the Controller
+use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Flash;
+use Illuminate\Support\Facades\Auth;
 
 
 use Illuminate\Http\Request;
-use Auth;
 
 class AuthController extends Controller
 {
     public function showLoginForm()
-    {
+    {   
         return view('login');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('/'); // Change this to the desired destination after login
+        // $credentials = $request->only('email', 'password');
+
+        $user = User::where('email',$request->email)->first();
+
+        if($user == null){
+            return redirect()->back()->withInput()->withErrors(['login' => 'User of this mail not found!']);
         }
-
-        return redirect()->back()->withInput()->withErrors(['login' => 'Invalid login credentials']);
+        else{
+            if($user->password == $request->password){
+                Auth::login($user, true);
+                return redirect()->route('student_dashboard');
+            }
+            else{
+                return redirect()->back()->withInput()->withErrors(['login' => 'Wrong Password!']);
+            }
+        }
     }
 
     public function logout()
@@ -64,7 +80,7 @@ public function register(Request $request)
             'major' => $request->major,
         ]);
 
-        return redirect()->route('/'); // Replace 'home' with the appropriate route name
+        return redirect()->route('home'); // Replace 'home' with the appropriate route name
     } catch (\Exception $e) {
         error_log('Registration Error: ' . $e->getMessage());
 
@@ -74,15 +90,30 @@ public function register(Request $request)
 
 public function submit_registration(Request $request)
 {
-    
-    $student = new Student;
-    $student->name = $request->name;
-    $student->id = $request->id;
-    $student->email = $request->email;
-    $student->password = $request->password;
-    $student->major = $request->major;
+    $request->validate([
+        'email' => 'required|unique:users|email',
+        'password' => 'required|string',
+        'id' => 'required|unique:student'
+    ]);
 
-    $student->save();
+    $user = new User;
+    $user->email = $request->email;
+    $user->password = $request->password;
+    $user->type = 'student';
+
+    if($user->save()){
+        $student = new Student;
+        $student->name = $request->name;
+        $student->id = $request->id;
+        $student->user_id = $user->id;
+        $student->major = $request->major;
+
+        if($student->save()){
+            $user = User::where('email',$request->email)->first();
+            Auth::login($user, true);
+            return redirect()->route('student_dashboard');
+        }
+    }
 }
 
 }

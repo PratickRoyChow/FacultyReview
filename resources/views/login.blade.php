@@ -18,13 +18,13 @@
                 <input id="password" type="password" name="password" required style="width: 100%; padding: 5px;">
             </div>
 
-            <div style="margin-bottom: 10px;">
+            <!-- <div style="margin-bottom: 10px;">
                 <label>User Role:</label>
                 <div>
                     <input type="radio" name="role" value="student" checked> Student
                     <input type="radio" name="role" value="admin"> Admin
                 </div>
-            </div>
+            </div> -->
 
             <div>
                 <button type="submit" style="background-color: #007bff; color: #ffffff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Login</button>
@@ -35,6 +35,12 @@
             <div style="text-align: center; margin-top: 10px;">
                 <a href="{{ route('password.request') }}" style="color: #007bff; text-decoration: none;">Forgot Your Password?</a>
             </div>
+        @endif
+
+        @if ($errors->has('login'))
+            <span role="alert" style="color: #FF0000">
+                <strong>{{ $errors->first('login') }}</strong>
+            </span>
         @endif
     </div>
 </div>
